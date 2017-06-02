@@ -16,4 +16,16 @@ function cipher_form() {
         '#type' => 'textfield',
         '#description' => t('Enter your encyption key!'),
     );
+
+    $form['direction'] = array(
+        '#title' => 'Shift Direction',
+        '#type' => 'textfield',
+        '#description' => t('Enter the encryption direction'),
+    );
+
+    $form['input'] = array(
+        '#title' => 'Encryption Text',
+        '#type' => 'textfield',
+        '#description' => t('Enter Text to Encrypt!'),
+    )
 }

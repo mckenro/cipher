@@ -1,5 +1,5 @@
 name = Cipher
 description = Creates a coded message by shifting the letters input by the user.
-package = Rob Friday
+package = Rob Friday 
 core = 7.x
 files[] = cipher.module
