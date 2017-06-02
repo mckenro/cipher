@@ -1,0 +1,19 @@
+<?php
+function cipher_menu() {
+    $items['cipher'] = array(
+        'title' => 'Cipher Your Text',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('cipher_form'),
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+function cipher_form() {
+    $form['shift'] = array(
+        '#title' => 'Encryption Number',
+        '#type' => 'textfield',
+        '#description' => t('Enter your encyption key!'),
+    );
+}
