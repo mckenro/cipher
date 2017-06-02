@@ -8,7 +8,7 @@ function cipher_menu() {
         'type' => MENU_NORMAL_ITEM,
     );
 
-    $items['cipher_success_page'] = array(
+    $items['cipher_result_page'] = array(
         'title' => 'Your Cipher!',
         'page callback' => 'cipher_result',
         'access callback' => TRUE,
@@ -38,7 +38,7 @@ function cipher_form() {
         '#title' => 'Encryption Text',
         '#type' => 'textfield',
         '#description' => t('Enter Text to Encrypt!'),
-        // '#element_validate' => array('element_validate_integer_positive'),
+        '#element_validate' => array('element_validate_input'),
         '#required' => TRUE,
     );
 
@@ -56,8 +56,42 @@ function element_validate_direction($element) {
 }
 
 function element_validate_input($element) {
-    $special_chars = preg_match("/[@#^~``*&+[]/",$element['#value'], $matches);
+    $special_chars = preg_match("/[@$%()<>|'#^~`*&+[]/",$element['#value'], $matches);
     if ($special_chars > 0) {
         form_error($element, t('Please enter only letters and standard punctuation.'));
     }
+}
+
+function cipher_form_submit($form, &$form_state) {
+    $shift = (int)$form_state['values']['shift'];
+    $direction = $form_state['values']['direction'] == 'right' ? 1 : -1;
+    $input = strToLower($form_state['values']['input']);
+    $alphabet = range('a', 'z');
+    $result_array = array();
+
+    $input_array = str_split($input);
+
+    foreach($input_array as $letter) {
+        $shift_letter_index = array_search($letter, $alphabet) + ($shift * $direction);
+        if ($shift_letter_index > 25) {
+          $shift_letter_index = ($shift_letter_index % 26);
+        } elseif ($shift_letter_index < 0 && $shift_letter_index >= -25){
+          $shift_letter_index += 26;
+        } elseif ($shift_letter_index < -25) {
+          $shift_letter_index = ($shift_letter_index % 26) * -1;
+        }
+        if (in_array($letter, $alphabet)) {
+          array_push($result_array, $alphabet[$shift_letter_index]);
+        } else {
+          array_push($result_array, $letter);
+        }
+    }
+
+    $_SESSION['result'] = implode($result_array);
+    $form_state['redirect'] = 'cipher_result_page';
+}
+
+function cipher_result() {
+    $results = $_SESSION['result'];
+    return 'Your encoded message is: ' . $results;
 }
