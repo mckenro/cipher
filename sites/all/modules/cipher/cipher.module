@@ -7,6 +7,13 @@ function cipher_menu() {
         'access callback' => TRUE,
         'type' => MENU_NORMAL_ITEM,
     );
+
+    $items['cipher_success_page'] = array(
+        'title' => 'Your Cipher!',
+        'page callback' => 'cipher_result',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
     return $items;
 }
 
@@ -15,17 +22,42 @@ function cipher_form() {
         '#title' => 'Encryption Number',
         '#type' => 'textfield',
         '#description' => t('Enter your encyption key!'),
+        '#element_validate' => array('element_validate_integer_positive'),
+        '#required' => TRUE,
     );
 
     $form['direction'] = array(
         '#title' => 'Shift Direction',
         '#type' => 'textfield',
         '#description' => t('Enter the encryption direction'),
+        '#element_validate' => array('element_validate_direction'),
+        '#required' => TRUE,
     );
 
     $form['input'] = array(
         '#title' => 'Encryption Text',
         '#type' => 'textfield',
         '#description' => t('Enter Text to Encrypt!'),
+        // '#element_validate' => array('element_validate_integer_positive'),
+        '#required' => TRUE,
     );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Generate Cipher!',
+    );
+    return $form;
+}
+
+function element_validate_direction($element) {
+    if (((strtolower($element['#value']) != 'right') && (strtolower($element['#value']) != 'left'))) {
+        form_error($element, t('Please enter either LEFT or RIGHT.'));
+    }
+}
+
+function element_validate_input($element) {
+    $special_chars = preg_match("/[@#^~``*&+[]/",$element['#value'], $matches);
+    if ($special_chars > 0) {
+        form_error($element, t('Please enter only letters and standard punctuation.'));
+    }
 }
