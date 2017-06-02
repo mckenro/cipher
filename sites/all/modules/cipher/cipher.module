@@ -27,5 +27,5 @@ function cipher_form() {
         '#title' => 'Encryption Text',
         '#type' => 'textfield',
         '#description' => t('Enter Text to Encrypt!'),
-    )
+    );
 }
